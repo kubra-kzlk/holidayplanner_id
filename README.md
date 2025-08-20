@@ -1,40 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+Top—hier is **exact dezelfde examenoefening**, maar nu met de **dataset waar elk land ook een `id` heeft**. (De opdrachten blijven identiek.)
 
-## Getting Started
+---
 
-First, run the development server:
+# Examenoefening: **Holiday Planner**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+We werken met een dataset die bestaat uit **landen** en hun **feestdagen**.
+De dataset is groter en genest, zodat studenten meer moeten nadenken over filtering en dynamische routing.
+
+**Dataset (voorbeeld):**
+
+```json
+{
+  "countries": [
+    {
+      "id": 1,
+      "code": "BE",
+      "name": "Belgium",
+      "holidays": [
+        { "id": 1, "year": 2025, "date": "2025-01-01", "name": "Nieuwjaar", "type": "Public" },
+        { "id": 2, "year": 2025, "date": "2025-05-01", "name": "Dag van de Arbeid", "type": "Public" }
+      ]
+    },
+    {
+      "id": 2,
+      "code": "FR",
+      "name": "France",
+      "holidays": [
+        { "id": 3, "year": 2025, "date": "2025-07-14", "name": "Fête nationale", "type": "Public" },
+        { "id": 4, "year": 2025, "date": "2025-11-11", "name": "Armistice", "type": "Public" }
+      ]
+    },
+    {
+      "id": 3,
+      "code": "US",
+      "name": "United States",
+      "holidays": [
+        { "id": 5, "year": 2025, "date": "2025-07-04", "name": "Independence Day", "type": "Federal" },
+        { "id": 6, "year": 2025, "date": "2025-11-27", "name": "Thanksgiving", "type": "Federal" }
+      ]
+    }
+  ]
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## API Routes
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. **GET /countries**
+   Geef een lijst van alle landen (alleen **code** en **naam**).
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+2. **GET /countries/\[code]**
+   Geef de details van een land, inclusief **alle feestdagen**.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **GET /holidays/\[year]**
+   Geef **alle feestdagen van alle landen** voor een bepaald jaar.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Client Side Rendering
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+* **/countries**
+  Toon een lijst met alle landen.
+  Tijdens het laden: toon **“Loading…”**.
+  Data moet komen van je **eigen API route** `/countries`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Static Site Generation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* **/holidays**
+  Toon een lijst van **alle feestdagen van alle landen** (**alleen naam + land**).
+  Voorzie een **zoekveld** zodat de gebruiker kan filteren op feestdagnaam (**case-insensitive**).
+  **Data rechtstreeks uit de JSON** (niet via je eigen API).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+* **/holidays/\[year]**
+  Toon alle feestdagen voor een bepaald jaar.
+  Gebruik **dynamische SSG routes**: `/holidays/2025`, `/holidays/2026`, …
+
+* **/countries/\[code]**
+  Toon **detailpagina** van een land, met **naam, code en lijst van feestdagen**.
+  **Data rechtstreeks uit de JSON**.
+
+---
+
+## Server Side Rendering
+
+* **/** (homepagina)
+  Toon **alle landen**. Onder elk land moet een **lijst van feestdagen** staan die in dat land voorkomen.
+  Elke feestdag moet een **link** zijn naar de **detailpagina van dat land**.
+  **Data rechtstreeks ophalen via `fetch`** (dus niet via je eigen API).
+
+---
+
+⚡️ Dit is moeilijker omdat:
+
+* Er is een **geneste dataset** (landen → feestdagen) met nu ook **`id` op landniveau**.
+* Meerdere **dynamische routes**: `/holidays/[year]`, `/countries/[code]`.
+* **Zoekveld** met **case-insensitive** filtering.
+* Combinatie van **API routes**, **CSR**, **SSG** en **SSR**, net als in de labo’s.
+
+---
